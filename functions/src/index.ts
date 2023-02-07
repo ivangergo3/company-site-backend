@@ -12,8 +12,7 @@ export const email = functions
       headers['content-type'] !== 'application/x-www-form-urlencoded' ||
       headers['referer'] === undefined ||
       body['email'] === undefined ||
-      body['message'] === undefined ||
-      body['repository'] === undefined
+      body['message'] === undefined
     ) {
       response.status(400);
       response.send();
@@ -32,11 +31,11 @@ export const email = functions
         .send(mailTo, 'Contact Us', `${body['email']}\n${body['message']}`)
         .then((result) => {
           console.log('Done', result);
-          response.redirect(`${headers['referer']}${body['repository']}/sent.html`);
+          response.redirect(`${headers['referer']}/sent.html`);
         })
         .catch((error) => {
           console.error('Error: ', error);
-          response.redirect(`${headers['referer']}${body['repository']}/error.html`);
+          response.redirect(`${headers['referer']}/error.html`);
         });
     }
   });

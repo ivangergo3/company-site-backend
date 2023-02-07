@@ -10,7 +10,7 @@ If you want to deploy it, you can do so by compiling then run the `npm run deplo
 
 ## Function secrets
 
-You can add a new secter with [this](https://console.cloud.google.com/security/secret-manage) firebase feature. With the create new secret button you can create a new secret that you can use in your function right away. To be able to use it locally, or create the secter programatically please have a look at [this page](https://firebase.google.com/docs/functions/config-env#create-secret)
+You can add a new secret with [this](https://console.cloud.google.com/security/secret-manage) firebase feature. With the create new secret button you can create a new secret that you can use in your function right away. To be able to use it locally, or create the secret programatically please have a look at [this page](https://firebase.google.com/docs/functions/config-env#create-secret)
 
 ## Send email
 
