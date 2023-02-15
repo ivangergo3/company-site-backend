@@ -31,11 +31,11 @@ export const email = functions
         .send(mailTo, 'Contact Us', `${body['email']}\n${body['message']}`)
         .then((result) => {
           console.log('Done', result);
-          response.redirect(`${headers['referer']}/sent.html`);
+          response.redirect(`${headers['referer']}sent.html`);
         })
         .catch((error) => {
           console.error('Error: ', error);
-          response.redirect(`${headers['referer']}/error.html`);
+          response.redirect(`${headers['referer']}error.html`);
         });
     }
   });
