@@ -10,7 +10,7 @@ export const email = functions
 
     if (request.method !== 'POST') {
       response.status(405).send('Method Not Allowed');
-      return;
+      response.send();
     }
 
     if (
@@ -47,9 +47,15 @@ export const email = functions
       sgMail.send(data).then(
         (result) => {
           console.log('Sent email');
+          response.status(200);
+          response.redirect(`${headers['referer']}sent.html`);
+          response.send();
         },
         (err) => {
           console.error(err);
+          response.status(500);
+          response.redirect(`${headers['referer']}error.html`);
+          response.send();
         }
       );
     }
