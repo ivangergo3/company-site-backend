@@ -3,7 +3,7 @@ import { Client } from '@sendgrid/client';
 import * as sgMail from '@sendgrid/mail';
 
 export const email = functions
-  .runWith({ secrets: ['API_KEY', 'EMAIL_FROM', 'EMAIL_TO'] })
+  .runWith({ secrets: ['SENDGRID_KEY', 'EMAIL_FROM', 'EMAIL_TO'] })
   .https.onRequest((request, response) => {
     const headers = request.headers;
     const body = request.body;
@@ -22,7 +22,7 @@ export const email = functions
       response.status(400);
       response.send();
     } else {
-      const apiKey = process.env.API_KEY as string;
+      const apiKey = process.env.SENDGRID_KEY as string;
       const emailFrom = process.env.EAMIL_FROM as string;
       const emailTo = process.env.EMAIL_TO as string;
 
