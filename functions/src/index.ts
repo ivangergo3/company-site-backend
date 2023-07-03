@@ -1,14 +1,19 @@
 import * as functions from 'firebase-functions';
-import { NodeMailgun } from 'ts-mailgun';
+import { Client } from '@sendgrid/client';
+import * as sgMail from '@sendgrid/mail';
 
 export const email = functions
-  .runWith({ secrets: ['API_KEY', 'DOMAIN', 'EMAIL_TO'] })
+  .runWith({ secrets: ['API_KEY', 'EMAIL_FROM', 'EMAIL_TO'] })
   .https.onRequest((request, response) => {
     const headers = request.headers;
     const body = request.body;
 
+    if (request.method !== 'POST') {
+      response.status(405).send('Method Not Allowed');
+      return;
+    }
+
     if (
-      request.method !== 'POST' ||
       headers['content-type'] !== 'application/x-www-form-urlencoded' ||
       headers['referer'] === undefined ||
       body['email'] === undefined ||
@@ -17,25 +22,35 @@ export const email = functions
       response.status(400);
       response.send();
     } else {
-      const mailer = new NodeMailgun();
+      const apiKey = process.env.API_KEY as string;
+      const emailFrom = process.env.EAMIL_FROM as string;
+      const emailTo = process.env.EMAIL_TO as string;
 
-      mailer.apiKey = process.env.API_KEY as string;
-      mailer.domain = process.env.DOMAIN as string;
-      mailer.fromEmail = `company-site@${mailer.domain}`;
-      mailer.fromTitle = 'Company site';
-      const mailTo = process.env.EMAIL_TO as string;
+      // Test setClient() method
+      sgMail.setClient(new Client());
 
-      mailer.init();
+      // Test setApiKey() method
+      sgMail.setApiKey(apiKey);
 
-      mailer
-        .send(mailTo, 'Contact Us', `${body['email']}\n${body['message']}`)
-        .then((result) => {
-          console.log('Done', result);
-          response.redirect(`${headers['referer']}sent.html`);
-        })
-        .catch((error) => {
-          console.error('Error: ', error);
-          response.redirect(`${headers['referer']}error.html`);
-        });
+      // Test setSubstitutionWrappers() method
+      sgMail.setSubstitutionWrappers('{{', '}}');
+
+      const data = {
+        from: emailFrom,
+        to: emailTo,
+        subject: 'Company reach out',
+        text: 'This is a test email',
+        html: `<h2>${body['email']}</h2><p>${body['message']}</p>`,
+      };
+
+      // Test send() method
+      sgMail.send(data).then(
+        (result) => {
+          console.log('Sent email');
+        },
+        (err) => {
+          console.error(err);
+        }
+      );
     }
   });
